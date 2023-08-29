@@ -2,8 +2,8 @@ github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT
 github.com/benbjohnson/clock v1.3.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/maitredede/gonfc v0.0.0-20230825210701-85a9e6300850 h1:TSWylglg2PRj+tnzc5/S18trluLRmk9VWIalCyTTwCc=
-github.com/maitredede/gonfc v0.0.0-20230825210701-85a9e6300850/go.mod h1:j3yrd3AyCFJrGq1dovprLR39I6EdPAgbUmK61yl4iIo=
+github.com/maitredede/gonfc v0.0.0-20230829010214-7e6c0b30d416 h1:7eNDaxM80/RPpGK3QOZ4DhAyXlTyGaVt7cXmIFt0txo=
+github.com/maitredede/gonfc v0.0.0-20230829010214-7e6c0b30d416/go.mod h1:ysiNq0+QWr6e6zida7C0yDfQnxSWr55ILQE/camLShw=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=

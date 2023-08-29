@@ -12,7 +12,7 @@ type MifareClassic4k struct {
 	// 	tagtype int
 	active int
 	timeout/*int*/ time.Duration
-	target *gonfc.ISO14443aTarget
+	target *gonfc.NfcTarget
 }
 
 var _ FreefareTag = (*MifareClassic4k)(nil)
@@ -25,19 +25,19 @@ func (MifareClassic4k) Type() TagType {
 	return MIFARE_CLASSIC_4K
 }
 
-func mifareClassic4kTaste(device gonfc.Device, target gonfc.Target) (*MifareClassic4k, bool) {
-	mf, ok := target.(*gonfc.ISO14443aTarget)
-	if !ok {
+func mifareClassic4kTaste(device gonfc.Device, target *gonfc.NfcTarget) (*MifareClassic4k, bool) {
+	if target.NM.Type != gonfc.NMT_ISO14443A {
 		return nil, false
 	}
-	if mf.Sak != 0x18 && mf.Sak != 0x38 {
+	btSak := target.NTI.NAI().BtSak
+	if btSak != 0x18 && btSak != 0x38 {
 		return nil, false
 
 	}
 
 	tag := &MifareClassic4k{
 		device:  device,
-		target:  mf,
+		target:  target,
 		active:  0,
 		timeout: MIFARE_DEFAULT_TIMEOUT,
 	}

@@ -10,7 +10,7 @@ const (
 	MIFARE_DEFAULT_TIMEOUT = 2000 * time.Millisecond
 )
 
-func freefareTagNew(device gonfc.Device, target gonfc.Target) FreefareTag {
+func freefareTagNew(device gonfc.Device, target *gonfc.NfcTarget) FreefareTag {
 
 	if fc, ok := felicaTaste(device, target); ok {
 		return fc

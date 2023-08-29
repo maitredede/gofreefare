@@ -12,7 +12,7 @@ type MifareMini struct {
 	// 	tagtype int
 	active int
 	timeout/*int*/ time.Duration
-	target *gonfc.ISO14443aTarget
+	target *gonfc.NfcTarget
 }
 
 var _ FreefareTag = (*MifareMini)(nil)
@@ -25,18 +25,17 @@ func (MifareMini) Type() TagType {
 	return MIFARE_MINI
 }
 
-func mifareMiniTaste(device gonfc.Device, target gonfc.Target) (*MifareMini, bool) {
-	mf, ok := target.(*gonfc.ISO14443aTarget)
-	if !ok {
+func mifareMiniTaste(device gonfc.Device, target *gonfc.NfcTarget) (*MifareMini, bool) {
+	if target.NM.Type != gonfc.NMT_ISO14443A {
 		return nil, false
 	}
-	if mf.Sak != 0x09 {
+	if target.NTI.NAI().BtSak != 0x09 {
 		return nil, false
 	}
 
 	tag := &MifareMini{
 		device:  device,
-		target:  mf,
+		target:  target,
 		active:  0,
 		timeout: MIFARE_DEFAULT_TIMEOUT,
 	}

@@ -12,7 +12,7 @@ type MifareUltralightC struct {
 	// 	tagtype int
 	active int
 	timeout/*int*/ time.Duration
-	target *gonfc.ISO14443aTarget
+	target *gonfc.NfcTarget
 }
 
 var _ FreefareTag = (*MifareUltralightC)(nil)
@@ -25,47 +25,50 @@ func (MifareUltralightC) Type() TagType {
 	return MIFARE_ULTRALIGHT_C
 }
 
-func mifareUltralightCTaste(device gonfc.Device, target gonfc.Target) (*MifareUltralightC, bool) {
-	mf, ok := target.(*gonfc.ISO14443aTarget)
-	if !ok {
+func mifareUltralightCTaste(device gonfc.Device, target *gonfc.NfcTarget) (*MifareUltralightC, bool) {
+	if !taste(target) {
 		return nil, false
 	}
-	if mf.Sak != 0x00 {
+	isC, err := isMifareUltralightcOnReader(device, target.NTI.NAI())
+	if err != nil {
+		return nil, false
+	}
+	if !isC {
 		return nil, false
 	}
 
 	tag := &MifareUltralightC{
 		device:  device,
-		target:  mf,
+		target:  target,
 		active:  0,
 		timeout: MIFARE_DEFAULT_TIMEOUT,
 	}
 	return tag, true
 }
 
-func isMifareUltralightcOnReader(device gonfc.Device, target *gonfc.ISO14443aTarget) bool {
+func isMifareUltralightcOnReader(device gonfc.Device, nai *gonfc.NfcIso14443aInfo) (bool, error) {
 	mod := gonfc.Modulation{
 		Type:     gonfc.ISO14443a,
 		BaudRate: gonfc.Nbr106,
 	}
-	initData := target.UID[:]
+	initData := nai.UID()
 	if _, err := device.InitiatorSelectPassiveTarget(mod, initData); err != nil {
-		panic(err)
+		return false, err
 	}
 	if err := device.SetPropertyBool(gonfc.EasyFraming, false); err != nil {
-		panic(err)
+		return false, err
 	}
 	cmdStep1 := []byte{0x1A, 0x00}
 	resStep1 := make([]byte, 9)
 	ret, err := device.InitiatorTransceiveBytes(cmdStep1, resStep1, 0)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 	if err := device.SetPropertyBool(gonfc.EasyFraming, true); err != nil {
-		panic(err)
+		return false, err
 	}
 	if err := device.InitiatorDeselectTarget(); err != nil {
-		panic(err)
+		return false, err
 	}
-	return ret > 0
+	return ret > 0, nil
 }

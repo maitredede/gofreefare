@@ -12,7 +12,7 @@ type MifareUltralight struct {
 	// 	tagtype int
 	active int
 	timeout/*int*/ time.Duration
-	target *gonfc.ISO14443aTarget
+	target *gonfc.NfcTarget
 }
 
 var _ FreefareTag = (*MifareUltralight)(nil)
@@ -25,20 +25,31 @@ func (MifareUltralight) Type() TagType {
 	return MIFARE_ULTRALIGHT
 }
 
-func mifareUltralightTaste(device gonfc.Device, target gonfc.Target) (*MifareUltralight, bool) {
-	mf, ok := target.(*gonfc.ISO14443aTarget)
-	if !ok {
+func mifareUltralightTaste(device gonfc.Device, target *gonfc.NfcTarget) (*MifareUltralight, bool) {
+	if !taste(target) {
 		return nil, false
 	}
-	if mf.Sak != 0x00 {
+	isC, err := isMifareUltralightcOnReader(device, target.NTI.NAI())
+	if err != nil {
+		return nil, false
+	}
+	if isC {
 		return nil, false
 	}
 
 	tag := &MifareUltralight{
 		device:  device,
-		target:  mf,
+		target:  target,
 		active:  0,
 		timeout: MIFARE_DEFAULT_TIMEOUT,
 	}
 	return tag, true
+}
+
+func taste(target *gonfc.NfcTarget) bool {
+	if target.NM.Type != gonfc.NMT_ISO14443A {
+		return false
+	}
+	btSak := target.NTI.NAI().BtSak
+	return btSak == 0x00
 }

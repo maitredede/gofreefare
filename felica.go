@@ -12,7 +12,7 @@ type FelicaTag struct {
 	// 	tagtype int
 	active int
 	timeout/*int*/ time.Duration
-	target *gonfc.FelicaTarget
+	target *gonfc.NfcTarget
 }
 
 var _ FreefareTag = (*FelicaTag)(nil)
@@ -25,15 +25,14 @@ func (t *FelicaTag) Device() gonfc.Device {
 	return t.device
 }
 
-func felicaTaste(device gonfc.Device, target gonfc.Target) (*FelicaTag, bool) {
-	fc, ok := target.(*gonfc.FelicaTarget)
-	if !ok {
+func felicaTaste(device gonfc.Device, target *gonfc.NfcTarget) (*FelicaTag, bool) {
+	if target.NM.Type != gonfc.Felica {
 		return nil, false
 	}
 
 	tag := &FelicaTag{
 		device:  device,
-		target:  fc,
+		target:  target,
 		active:  0,
 		timeout: MIFARE_DEFAULT_TIMEOUT,
 	}
