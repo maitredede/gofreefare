@@ -39,7 +39,7 @@ func GetTags(device gonfc.Device) ([]FreefareTag, error) {
 		Type:     gonfc.ISO14443a,
 		BaudRate: gonfc.Nbr106,
 	}
-	candidates, err := device.InitiatorListPassiveTargets(modulation)
+	candidates, err := gonfc.InitiatorListPassiveTargets(device, modulation)
 	if err != nil {
 		return tags, fmt.Errorf("list passive targets: %w", err)
 	}
@@ -55,7 +55,7 @@ func GetTags(device gonfc.Device) ([]FreefareTag, error) {
 		Type:     gonfc.Felica,
 		BaudRate: gonfc.Nbr424,
 	}
-	candidates, err = device.InitiatorListPassiveTargets(modulation)
+	candidates, err = gonfc.InitiatorListPassiveTargets(device, modulation)
 	if err != nil {
 		return nil, fmt.Errorf("list passive targets: %w", err)
 	}
