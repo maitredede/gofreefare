@@ -2,7 +2,7 @@ module github.com/maitredede/gofreefare
 
 go 1.21.0
 
-require github.com/maitredede/gonfc v0.0.0-20230830050341-ea878799f688
+require github.com/maitredede/gonfc v0.0.0-20230901041749-21dd135cd6b6
 
 require (
 	go.uber.org/multierr v1.11.0 // indirect
